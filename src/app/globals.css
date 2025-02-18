@@ -338,6 +338,7 @@ aside.aside {
   position: fixed;
   top: 50px;
   left: 0px;
+  overflow: auto;
 }
 
 main.main {
@@ -634,6 +635,7 @@ main.main h2 .bread em:before {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 9999;
 }
 
 .modal_wrap .modal_pop {
@@ -663,4 +665,35 @@ main.main h2 .bread em:before {
 .modal_wrap .modal_pop .modal_pop_x:hover {
   background: black;
   color: white;
+}
+
+.user_menu {
+  width: 160px;
+  height: auto;
+  background: white;
+  padding: 10px;
+  border: 1px solid #d4d4d4;
+  position: fixed;
+  top: 40px;
+  right: 20px;
+  z-index: 2;
+  display: none;
+}
+.user_menu.sel {
+  display: block;
+}
+.user_menu a {
+  display: block;
+  line-height: 30px;
+  border-bottom: 1px solid #d4d4d4;
+  text-align: left;
+  height: 30px;
+  font-size: 14px;
+  font-weight: normal;
+}
+.user_menu a:hover {
+  background: #f4f4f4;
+}
+.user_menu a:last-of-type {
+  border: none;
 }

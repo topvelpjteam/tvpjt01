@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import LeftMenu from "@/component/leftMenu";
+import Header from "@/component/header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,22 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <div className="wrap">
-          <header className="header">
-            <h1>TIVIC</h1>
-            <div className="menu_open_close">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-            <div className="header_search">
-              <input type="text" placeholder="Search" />
-              <button></button>
-            </div>
-            <div className="user_info">
-              Aron cutter
-              <div className="user_face"></div>
-            </div>
-          </header>
+          <Header />
           <aside className="aside">
             <LeftMenu />
           </aside>
