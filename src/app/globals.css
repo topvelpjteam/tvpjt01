@@ -597,6 +597,7 @@ main.main h2 {
   text-overflow: ellipsis;
   overflow: hidden;
   position: relative;
+  margin-bottom: 40px;
 }
 
 main.main h2 .bread {
