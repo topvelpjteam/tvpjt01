@@ -1,0 +1,137 @@
+//mixins
+@mixin text-ovf-line($line) {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: #{$line};
+  -webkit-box-orient: vertical;
+}
+
+@mixin text-ovf($width) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: $width;
+}
+
+@mixin vw($property, $px) {
+  #{$property}: funcVW($px);
+}
+
+/* retina */
+@mixin retina {
+  @media only screen and (-webkit-min-device-pixel-ratio: 2),
+    only screen and (min--moz-device-pixel-ratio: 2),
+    only screen and (-o-min-device-pixel-ratio: 2/1),
+    only screen and (min-device-pixel-ratio: 2),
+    only screen and (min-resolution: 192dpi),
+    only screen and (min-resolution: 2dppx) {
+    @content;
+  }
+}
+
+/* place holder */
+@mixin placeholder {
+  &::-webkit-input-placeholder {
+    @content;
+  }
+  &:-moz-placeholder {
+    @content;
+  }
+  &::-moz-placeholder {
+    @content;
+  }
+  &:-ms-input-placeholder {
+    @content;
+  }
+}
+
+/* scrollbar hide */
+@mixin scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+  }
+}
+
+@mixin scrollbars(
+  $size,
+  $foreground-color,
+  $background-color: mix($foreground-color, white, 50%)
+) {
+  // For Google Chrome
+  &::-webkit-scrollbar {
+    width: $size;
+    height: $size;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $foreground-color;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $background-color;
+  }
+
+  // For Internet Explorer
+  & {
+    scrollbar-face-color: $foreground-color;
+    scrollbar-track-color: $background-color;
+  }
+}
+
+/* aspect ratio */
+@mixin aspect-ratio($width, $height) {
+  position: relative;
+  &:before {
+    display: block;
+    content: '';
+    width: 100%;
+    padding-top: ($height / $width) * 100%;
+  }
+  > .inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+// font
+@mixin vw-font-size($size, $lineHeight) {
+  font-size: funcVW($size);
+  line-height: funcVW($lineHeight);
+}
+
+@mixin font-size($size, $lineHeight) {
+  font-size: rem($size);
+  line-height: em($lineHeight, $size);
+}
+
+@mixin font($size, $weight, $color, $lineHeight) {
+  @include font-size($size, $lineHeight);
+  font-weight: $weight;
+  color: $color;
+}
+
+//icon
+@mixin icon($width, $height) {
+  width: rem($width);
+  height: rem($height);
+} 
+
+// flex-box
+@mixin flex($justify: start, $align: center){
+  display: flex;
+  align-items: $align;
+  justify-content: _get-flax-justify($justify);
+}
+
+$flex-justify:(
+  start: flex-start,
+  end: flex-end,
+  between: space-between,
+  evenly: space-evenly,
+  around: space-around,
+);

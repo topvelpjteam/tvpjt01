@@ -1,42 +1,155 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+.menu_list_control {
+  width: 300px;
+  height: 550px;
+  border: 1px solid #d4d4d4;
+  overflow: auto;
+  padding: 20px;
+  margin-right: 20px;
+  float: left;
+}
+.menu_list_control_rest {
+  width: calc(100% - 320px);
+  float: left;
+  position: relative;
+  height: auto;
+}
+.tivic_logo {
+  width: 82px;
+  height: 30px;
+  background: url("../public/assets/images/logo.png") no-repeat;
+  background-size: 100% 100%;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+main.main h2.title {
+  font-size: 34px;
+  font-weight: lighter;
+  color: black;
+  display: block;
+  height: 50px;
+  line-height: 50px;
+  border-bottom: 1px solid #d4d4d4;
+  margin-bottom: 34px;
+}
+main.main table {
+  border-collapse: collapse;
+  width: 100%;
+  height: auto;
+  border: 1px solid #d4d4d4;
+}
+main.main table th {
+  background: #f4f4f4;
+  padding: 10px;
+  border: 1px solid #d4d4d4;
+  text-align: Center;
+  font-size: 14px;
+  font-weight: bold;
+  color: black;
+}
+main.main table td {
+  background: white;
+  border: 1px solid #d4d4d4;
+  text-align: left;
+  font-size: 14px;
+  font-weight: normal;
+  color: black;
+  padding: 10px;
+}
+main.main:after {
+  clear: both;
+  content: "";
+  display: block;
+}
+main.main table td input[type="text"] {
+  width: 100%;
+  height: 30px;
+  border: 1px solid #d4d4d4;
+  background: White;
+  padding-left: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  color: black;
+}
+main.main table td input[type="number"] {
+  width: 100%;
+  height: 30px;
+  border: 1px solid #d4d4d4;
+  background: White;
+  padding-left: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  color: black;
+}
+main.main table td input[type="number"]:disabled {
+  background: #f4f4f4;
+}
+main.main table td input[type="text"]:disabled {
+  background: #f4f4f4;
+}
+main.main table th span {
+  color: red;
+}
+main.main table td button {
+  cursor: pointer;
+  border: none;
+  background: gray;
+  color: white;
+  border-radius: 4px;
+  width: auto;
+  padding-left: 12px;
+  padding-right: 12px;
+  height: 30px;
+  font-size: 12px;
+}
+main.main table td button:hover {
+  background: black;
+}
+main.main table td textarea {
+  height: 240px;
+  width: 100%;
+  text-align: left;
+  padding: 20px;
+  border: 1px solid #d4d4d4;
+  resize: none;
+}
+main.main .main_button_area {
+  width: 100%;
+  text-align: right;
+  height: 30px;
+  margin-bottom: 10px;
+  position: relative;
+}
+main.main .main_button_area button {
+  cursor: pointer;
+  border: none;
+  background: gray;
+  color: white;
+  border-radius: 4px;
+  width: auto;
+  padding-left: 12px;
+  padding-right: 12px;
+  height: 30px;
+  font-size: 12px;
+  margin-left: 10px;
+}
+main.main .main_button_area button:hover {
+  background: black;
+}
+main.main .main_button_area button.green {
+  background: rgb(26, 148, 26);
+}
+main.main .main_button_area button.green:hover {
+  background: rgb(19, 114, 19);
+}
+main.main .main_button_area button.red {
+  background: rgb(187, 22, 22);
+}
+main.main .main_button_area button.red:hover {
+  background: rgb(143, 15, 15);
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
+main.main .main_button_area button.blue {
+  background: rgb(24, 113, 185);
 }
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+main.main .main_button_area button.blue:hover {
+  background: rgb(18, 85, 139);
 }
