@@ -1,6 +1,7 @@
 "use client";
 import { Tree, TreeApi } from "react-arborist";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { getMenuTree } from "@/api/index";
 
 export default function MenuTree() {
   const initialData = [
@@ -29,6 +30,23 @@ export default function MenuTree() {
   const [treeData, setTreeData] = useState<any>(initialData);
   const [render, setrender] = useState<any>("");
 
+  useEffect(() => {
+    getMenu();
+  }, []);
+
+  const getMenu = async () => {
+    const menus = await getMenuTree();
+    console.log(menus.data.data.data);
+    let m = transformMenuData(menus.data.data.data);
+    setTreeData(m);
+  };
+  function transformMenuData(menuArray: any) {
+    return menuArray.map(({ menuNo, menuNm, children }: any) => ({
+      id: String(menuNo),
+      name: menuNm,
+      ...(children ? { children: transformMenuData(children) } : {}),
+    }));
+  }
   const removeItemById = (data: any[], targetId: string): any[] => {
     return data.reduce((result, item) => {
       if (item.id === targetId) {
@@ -117,6 +135,7 @@ export default function MenuTree() {
     console.log(result);
     setTreeData(result);
   };
+
   useEffect(() => {
     console.log(treeData);
     setrender(<Tree data={treeData} onMove={onMove} />);
