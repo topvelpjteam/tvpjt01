@@ -9,3 +9,10 @@ export async function getMenuTree() {
   const res = await authInstance.get(`/menu-service/api/tree`);
   return res;
 }
+
+export async function menuTreeUpdate(payload: any) {
+  console.log(payload);
+  const res = await authInstance.put(`/menu-service/api/tree`, payload);
+  console.log(res.data);
+  return res;
+}

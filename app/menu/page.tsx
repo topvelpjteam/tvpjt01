@@ -1,33 +1,10 @@
 "use client";
 import { Tree, TreeApi } from "react-arborist";
 import { useState, useEffect } from "react";
-import { getMenuTree } from "@/api/index";
+import { getMenuTree, menuTreeUpdate } from "@/api/index";
 
 export default function MenuTree() {
-  const initialData = [
-    { id: "1", name: "Unread" },
-    { id: "2", name: "Threads" },
-    {
-      id: "3",
-      name: "Chat Rooms",
-      children: [
-        { id: "c1", name: "General" },
-        { id: "c2", name: "Random" },
-        { id: "c3", name: "Open Source Projects" },
-      ],
-    },
-    {
-      id: "4",
-      name: "Direct Messages",
-      children: [
-        { id: "d1", name: "Alice" },
-        { id: "d2", name: "Bob" },
-        { id: "d3", name: "Charlie" },
-      ],
-    },
-  ];
-
-  const [treeData, setTreeData] = useState<any>(initialData);
+  const [treeData, setTreeData] = useState<any>([]);
   const [render, setrender] = useState<any>("");
 
   useEffect(() => {
@@ -41,11 +18,31 @@ export default function MenuTree() {
     setTreeData(m);
   };
   function transformMenuData(menuArray: any) {
-    return menuArray.map(({ menuNo, menuNm, children }: any) => ({
-      id: String(menuNo),
-      name: menuNm,
-      ...(children ? { children: transformMenuData(children) } : {}),
-    }));
+    return menuArray.map(
+      ({
+        menuNo,
+        menuNm,
+        children,
+        menuDc,
+        menuOrdr,
+        progrmFileNm,
+        relateImageNm,
+        relateImagePath,
+        upperMenuNo,
+      }: any) => ({
+        id: String(menuNo),
+        name: menuNm,
+        menuNo: Number(menuNo),
+        menuNm: menuNm,
+        menuDc: menuDc,
+        menuOrdr: menuOrdr,
+        progrmFileNm: progrmFileNm,
+        relateImageNm: relateImageNm,
+        relateImagePath: relateImagePath,
+        upperMenuNo: upperMenuNo,
+        ...(children ? { children: transformMenuData(children) } : {}),
+      })
+    );
   }
   const removeItemById = (data: any[], targetId: string): any[] => {
     return data.reduce((result, item) => {
@@ -138,6 +135,7 @@ export default function MenuTree() {
 
   useEffect(() => {
     console.log(treeData);
+    menuTreeUpdate(treeData);
     setrender(<Tree data={treeData} onMove={onMove} />);
   }, [treeData]);
   return (
