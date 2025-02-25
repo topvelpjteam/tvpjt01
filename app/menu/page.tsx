@@ -81,6 +81,7 @@ export default function MenuTree() {
     if (parentId === null) {
       const newArr = [...arr];
       newArr.splice(index, 0, item);
+      item.upperMenuNo = 0;
       return newArr;
     } else {
       const findParentAndInsert = (
@@ -92,6 +93,7 @@ export default function MenuTree() {
         for (let i = 0; i < list.length; i++) {
           if (list[i].id === parentId) {
             list[i].children = list[i].children || [];
+            item.upperMenuNo = Number(parentId);
             list[i].children.splice(index, 0, item);
             return true;
           }
