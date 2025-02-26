@@ -153,3 +153,67 @@ main.main .main_button_area button.blue {
 main.main .main_button_area button.blue:hover {
   background: rgb(18, 85, 139);
 }
+
+.tab_wrap {
+  width: 100%;
+  height: 44px;
+  border-bottom: 1px solid #d4d4d4;
+  margin-bottom: 10px;
+}
+.tab_wrap .tab_cell {
+  border: 1px solid #d4d4d4;
+  float: left;
+  height: 44px;
+  width: auto;
+  display: inline-block;
+  padding-left: 20px;
+  padding-right: 50px;
+  line-height: 44px;
+  font-size: 15px;
+  font-weight: normal;
+  color: gray;
+  cursor: pointer;
+  margin-right: -1px;
+  position: relative;
+}
+.tab_wrap .tab_cell:hover {
+  background: #f4f4f4;
+}
+.tab_wrap .tab_cell.ac:hover {
+  background: none;
+}
+.tab_wrap .tab_cell.ac {
+  border: 1px solid #d4d4d4;
+  border-bottom: 1px solid white;
+  float: left;
+  height: 44px;
+  cursor: auto;
+  width: auto;
+  display: inline-block;
+  padding-left: 20px;
+  padding-right: 50px;
+  line-height: 44px;
+  font-size: 15px;
+  font-weight: bold;
+  color: black;
+  margin-right: -1px;
+}
+.tab_wrap .tab_cell .tab_x {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #d4d4d4;
+  color: white;
+  line-height: 16px;
+  font-weight: normal;
+  font-size: 9px;
+  text-align: Center;
+  cursor: pointer;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  margin-top: -8px;
+}
+.tab_wrap .tab_cell .tab_x:hover {
+  background: black;
+}
