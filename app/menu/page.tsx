@@ -1,15 +1,29 @@
 "use client";
 import { Tree, TreeApi } from "react-arborist";
 import { useState, useEffect } from "react";
-import { getMenuTree, menuTreeUpdate } from "@/api/index";
+import { getMenuTree, menuTreeUpdate, menuCreate } from "@/api/index";
 
 export default function MenuTree() {
   const [treeData, setTreeData] = useState<any>([]);
   const [render, setrender] = useState<any>("");
+  const [menuNo, setMenuNo] = useState<any>(0);
+  const [menuOrder, setMenuOrder] = useState<any>(0);
+  const [menuNm, setmenuNm] = useState<any>("");
+  const [upperMenuNo, setUpperMenuNo] = useState<any>(0);
+  const [progrmFileNm, setProgramFileNm] = useState<any>("");
+  const [relateImagePath, setRelateImagePath] = useState<any>("");
+  const [relateImageNm, setRelateImageNm] = useState<any>("");
+  const [menuDc, setMenuDc] = useState<any>("");
 
   useEffect(() => {
     getMenu();
   }, []);
+
+  useEffect(() => {
+    console.log(treeData);
+    menuTreeUpdate(treeData);
+    setrender(<Tree data={treeData} onMove={onMove} />);
+  }, [treeData]);
 
   const getMenu = async () => {
     const menus = await getMenuTree();
@@ -18,6 +32,7 @@ export default function MenuTree() {
     setTreeData(m);
   };
   function transformMenuData(menuArray: any) {
+    let i = 0;
     return menuArray.map(
       ({
         menuNo,
@@ -35,7 +50,7 @@ export default function MenuTree() {
         menuNo: Number(menuNo),
         menuNm: menuNm,
         menuDc: menuDc,
-        menuOrdr: menuOrdr,
+        menuOrdr: i++,
         progrmFileNm: progrmFileNm,
         relateImageNm: relateImageNm,
         relateImagePath: relateImagePath,
@@ -111,10 +126,12 @@ export default function MenuTree() {
       const success = findParentAndInsert(newArr, parentId, item, index);
 
       if (success) {
-        return newArr;
+        let re = transformMenuData(newArr);
+        return re;
       } else {
         console.error("Parent not found");
-        return arr;
+        let re_arr = transformMenuData(arr);
+        return re_arr;
       }
     }
   };
@@ -135,11 +152,25 @@ export default function MenuTree() {
     setTreeData(result);
   };
 
-  useEffect(() => {
-    console.log(treeData);
-    menuTreeUpdate(treeData);
-    setrender(<Tree data={treeData} onMove={onMove} />);
-  }, [treeData]);
+  const createMenu = async () => {
+    if (menuNm === "") {
+      alert("메뉴명을 입력해주세요.");
+      (document.querySelector("#menu_nm") as HTMLInputElement).focus();
+    }
+    let data = {
+      menuNm: menuNm,
+      progrmFileNm: progrmFileNm,
+      menuNo: menuNo,
+      upperMenuNo: upperMenuNo,
+      menuOrdr: menuOrder,
+      menuDc: menuDc,
+      relateImagePath: relateImagePath,
+      relateImageNm: relateImageNm,
+    };
+    await menuCreate(data);
+    await getMenu();
+  };
+
   return (
     <>
       <h2 className="title">메뉴관리</h2>
@@ -154,6 +185,7 @@ export default function MenuTree() {
               top: "0px",
               margin: "0px",
             }}
+            onClick={createMenu}
           >
             메뉴추가
           </button>
@@ -168,14 +200,25 @@ export default function MenuTree() {
                 메뉴 no <span>*</span>
               </th>
               <td>
-                <input type="number" />
+                <input
+                  type="number"
+                  value={menuNo}
+                  onChange={(e: any) => {
+                    setMenuNo(e.target.value);
+                  }}
+                />
               </td>
               <th>
                 메뉴 순서 <span>*</span>
               </th>
-
               <td>
-                <input type="number" />
+                <input
+                  type="number"
+                  value={menuOrder}
+                  onChange={(e: any) => {
+                    setMenuOrder(e.target.value);
+                  }}
+                />
               </td>
             </tr>
             <tr>
@@ -183,13 +226,27 @@ export default function MenuTree() {
                 메뉴 명 <span>*</span>
               </th>
               <td>
-                <input type="text" />
+                <input
+                  type="text"
+                  id="menu_nm"
+                  value={menuNm}
+                  onChange={(e: any) => {
+                    setmenuNm(e.target.value);
+                  }}
+                />
               </td>
               <th>
                 상위메뉴No <span>*</span>
               </th>
               <td>
-                <input type="number" disabled />
+                <input
+                  type="number"
+                  disabled
+                  value={upperMenuNo}
+                  onChange={(e: any) => {
+                    setUpperMenuNo(e.target.value);
+                  }}
+                />
               </td>
             </tr>
             <tr>
@@ -201,6 +258,10 @@ export default function MenuTree() {
                   type="text"
                   disabled
                   style={{ width: "50%", marginRight: "10px" }}
+                  value={progrmFileNm}
+                  onChange={(e: any) => {
+                    setProgramFileNm(e.target.value);
+                  }}
                 />
                 <button>프로그램 파일명 검색</button>
               </td>
@@ -210,13 +271,25 @@ export default function MenuTree() {
                 관련이미지명 <span>*</span>
               </th>
               <td>
-                <input type="text" />
+                <input
+                  type="text"
+                  value={relateImagePath}
+                  onChange={(e: any) => {
+                    setRelateImagePath(e.target.value);
+                  }}
+                />
               </td>
               <th>
                 관련이미지경로 <span>*</span>
               </th>
               <td>
-                <input type="text" />
+                <input
+                  type="text"
+                  value={relateImageNm}
+                  onChange={(e: any) => {
+                    setRelateImageNm(e.target.value);
+                  }}
+                />
               </td>
             </tr>
             <tr>
@@ -224,7 +297,12 @@ export default function MenuTree() {
                 메뉴설명 <span>*</span>
               </th>
               <td colSpan={3}>
-                <textarea></textarea>
+                <textarea
+                  value={menuDc}
+                  onChange={(e: any) => {
+                    setMenuDc(e.target.value);
+                  }}
+                />
               </td>
             </tr>
           </tbody>

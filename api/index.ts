@@ -16,3 +16,10 @@ export async function menuTreeUpdate(payload: any) {
   console.log(res.data);
   return res;
 }
+
+export async function menuCreate(payload: any) {
+  console.log(payload);
+  const res = await authInstance.post(`/menu-service/api`, payload);
+  console.log(res.data);
+  return res;
+}
