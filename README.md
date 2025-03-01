@@ -1,5 +1,21 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+# 프로젝트 기술 스택
+
+## 프론트엔드
+- **Node.js**: 최신 버전
+- **Next.js**: 15 버전
+- **App Router** 사용
+- **전역 상태 관리**:
+  - Zustand
+  - React Query (비동기 데이터 관리)
+- **정적 자원 관리**: `public` 폴더에서 관리
+
+## 백엔드
+- **Java**: 17 버전
+- **Spring Boot**: 3.5 버전
+
+
 ## Getting Started
 
 First, run the development server:
