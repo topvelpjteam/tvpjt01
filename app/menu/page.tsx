@@ -1,29 +1,69 @@
 "use client";
 import { Tree, TreeApi } from "react-arborist";
 import { useState, useEffect } from "react";
-import { getMenuTree, menuTreeUpdate, menuCreate } from "@/api/index";
+import {
+  getMenuTree,
+  menuTreeUpdate,
+  menuCreate,
+  menuDetail,
+  menuDelete,
+  menuRecorect,
+} from "@/api/index";
 
 export default function MenuTree() {
   const [treeData, setTreeData] = useState<any>([]);
   const [render, setrender] = useState<any>("");
-  const [menuNo, setMenuNo] = useState<any>(0);
-  const [menuOrder, setMenuOrder] = useState<any>(0);
+  const [menuNo, setMenuNo] = useState<any>();
+  const [menuOrder, setMenuOrder] = useState<any>();
   const [menuNm, setmenuNm] = useState<any>("");
-  const [upperMenuNo, setUpperMenuNo] = useState<any>(0);
-  const [progrmFileNm, setProgramFileNm] = useState<any>("");
+  const [upperMenuNo, setUpperMenuNo] = useState<any>();
+  const [progrmFileNm, setProgramFileNm] = useState<any>("untitled");
   const [relateImagePath, setRelateImagePath] = useState<any>("");
   const [relateImageNm, setRelateImageNm] = useState<any>("");
   const [menuDc, setMenuDc] = useState<any>("");
+  const [menuPath, setMenuPath] = useState<any>("");
+  const [isDetail, setIsDetail] = useState<boolean>(false);
+  const [isNew, setIsNew] = useState<boolean>(false);
+  const [controlNumber, setControlNumber] = useState<Number>();
 
   useEffect(() => {
     getMenu();
+    console.log(isDetail);
   }, []);
 
   useEffect(() => {
     console.log(treeData);
-    menuTreeUpdate(treeData);
-    setrender(<Tree data={treeData} onMove={onMove} />);
+    if (treeData.length > 1) {
+      menuTreeUpdate(treeData);
+    }
+
+    setrender(
+      <Tree
+        data={treeData}
+        onMove={onMove}
+        onSelect={(e: any) => menuDetailOn(e)}
+        onClick={() => setIsDetail(true)}
+      />
+    );
   }, [treeData]);
+
+  const menuDetailOn = async (e: any) => {
+    console.log(e);
+    if (e.length > 0) {
+      let menu_detail: any = await menuDetail(e[0].data.menuNo);
+      console.log(menu_detail.data.data.data);
+      let menuSelected = menu_detail.data.data.data;
+      setMenuDc(menuSelected.menuDc);
+      setmenuNm(menuSelected.menuNm);
+      setMenuNo(menuSelected.menuNo);
+      setMenuOrder(menuSelected.menuOrder);
+      setMenuPath(menuSelected.menuPath);
+      setUpperMenuNo(menuSelected.upperMenuNo);
+      setRelateImageNm(menuSelected.relateImageNm);
+      setRelateImagePath(menuSelected.relateImagePath);
+      setControlNumber(menuSelected.menuNo);
+    }
+  };
 
   const getMenu = async () => {
     const menus = await getMenuTree();
@@ -169,6 +209,48 @@ export default function MenuTree() {
     };
     await menuCreate(data);
     await getMenu();
+    setIsNew(true);
+    setIsDetail(false);
+    setMenuDc("");
+    setmenuNm("");
+    setMenuNo(0);
+    setMenuOrder(0);
+    setMenuPath("");
+    setUpperMenuNo(0);
+    setRelateImageNm("");
+    setRelateImagePath("");
+  };
+
+  const deleteMenu = async (menuNo: any) => {
+    try {
+      let res = await menuDelete(menuNo);
+      if (res) {
+        getMenu();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const recorectMenu = async (menuNo: any) => {
+    try {
+      let data = {
+        menuNm: menuNm,
+        progrmFileNm: progrmFileNm,
+        menuNo: menuNo,
+        upperMenuNo: upperMenuNo,
+        menuOrdr: menuOrder,
+        menuDc: menuDc,
+        relateImagePath: relateImagePath,
+        relateImageNm: relateImageNm,
+      };
+      let res = await menuRecorect(menuNo, data);
+      if (res) {
+        getMenu();
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -177,21 +259,66 @@ export default function MenuTree() {
       <div className="menu_list_control">{render}</div>
       <div className="menu_list_control_rest">
         <div className="main_button_area">
-          <button
-            className="blue"
-            style={{
-              position: "absolute",
-              left: "0px",
-              top: "0px",
-              margin: "0px",
-            }}
-            onClick={createMenu}
-          >
-            메뉴추가
-          </button>
-          <button className="blue">저장</button>
-          <button className="green">수정</button>
-          <button className="red">삭제</button>
+          {isNew === true ? (
+            <button
+              className="blue"
+              style={{
+                position: "absolute",
+                left: "0px",
+                top: "0px",
+                margin: "0px",
+              }}
+              onClick={createMenu}
+            >
+              추가메뉴 저장
+            </button>
+          ) : (
+            <button
+              className="blue"
+              style={{
+                position: "absolute",
+                left: "0px",
+                top: "0px",
+                margin: "0px",
+              }}
+              onClick={() => {
+                setIsNew(true);
+                setIsDetail(false);
+                setMenuDc("");
+                setmenuNm("");
+                setMenuNo(0);
+                setMenuOrder(0);
+                setMenuPath("");
+                setRelateImageNm("");
+                setRelateImagePath("");
+              }}
+            >
+              메뉴추가
+            </button>
+          )}
+
+          {isDetail === true ? (
+            <>
+              <button
+                className="green"
+                onClick={() => {
+                  recorectMenu(controlNumber);
+                }}
+              >
+                수정
+              </button>
+              <button
+                className="red"
+                onClick={() => {
+                  deleteMenu(controlNumber);
+                }}
+              >
+                삭제
+              </button>
+            </>
+          ) : (
+            ""
+          )}
         </div>
         <table>
           <tbody>
@@ -288,6 +415,18 @@ export default function MenuTree() {
                   value={relateImageNm}
                   onChange={(e: any) => {
                     setRelateImageNm(e.target.value);
+                  }}
+                />
+              </td>
+            </tr>
+            <tr>
+              <th>메뉴 패스 라우터</th>
+              <td colSpan={3}>
+                <input
+                  type="text"
+                  value={menuPath}
+                  onChange={(e) => {
+                    setMenuPath(e.target.value);
                   }}
                 />
               </td>

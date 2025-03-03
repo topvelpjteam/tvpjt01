@@ -1,32 +1,29 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useSidebar } from '@/context/SidebarContext';
-
-type MenuItem = {
-  title: string;
-  path?: string;
-  icon: string;
-  children?: MenuItem[];
-};
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useSidebar } from "@/context/SidebarContext";
+import { getMenuTree } from "@/api/index";
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { isCollapsed, showSecondColumn, setShowSecondColumn, toggleSidebar } = useSidebar();
+  const { isCollapsed, showSecondColumn, setShowSecondColumn, toggleSidebar } =
+    useSidebar();
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [menuItems, setMenuItems] = useState<any>([]);
 
   useEffect(() => {
+    getAllMenu();
     setMounted(true);
   }, []);
 
   useEffect(() => {
     if (mounted) {
       if (!isCollapsed && !activeMenu) {
-        setActiveMenu('대시보드');
+        setActiveMenu("대시보드");
       }
       if (isCollapsed) {
         setShowSecondColumn(false);
@@ -34,6 +31,11 @@ export default function Sidebar() {
       }
     }
   }, [isCollapsed, setShowSecondColumn, activeMenu, mounted]);
+
+  const getAllMenu = async () => {
+    let me = await getMenuTree();
+    setMenuItems(me.data.data.data);
+  };
 
   if (!mounted) {
     return null;
@@ -48,135 +50,97 @@ export default function Sidebar() {
   };
 
   const handleIconClick = (title: string) => {
-      
-      if(isCollapsed){
-        //closed
-        console.log('click');
+    if (isCollapsed) {
+      //closed
+      console.log("click");
+      toggleSidebar();
+      setActiveMenu(title);
+      setShowSecondColumn(true);
+    } else {
+      //open
+
+      if (activeMenu === title) {
+        setActiveMenu(null);
+        setShowSecondColumn(false);
         toggleSidebar();
+      } else {
         setActiveMenu(title);
         setShowSecondColumn(true);
-      } else {
-        //open
-       
-        if (activeMenu === title) {
-          setActiveMenu(null);
-          setShowSecondColumn(false);
-          toggleSidebar();
-        } else {
-          setActiveMenu(title);
-          setShowSecondColumn(true);
-        }
       }
+    }
   };
 
-  const menuItems: MenuItem[] = [
-    {
-      title: '대시보드',
-      path: '/',
-      icon: '📊',
-      children: [
-        { title: '기본 대시보드', path: '/', icon: '📈' },
-        { title: '상세 대시보드', path: '/dashboard/detail', icon: '📉' }
-      ]
-    },
-    {
-      title: '코드관리',
-      path: '/code',
-      icon: '⚙️',
-      children: [
-        {
-          title: '기준정보',
-          icon: '📋',
-          children: [
-            { title: '공통코드', path: '/code', icon: '🔤' },
-            { title: '분류코드', path: '/code/category', icon: '📑' }
-          ]
-        },
-        { title: '코드등록', path: '/code/new', icon: '✏️' }
-      ]
-    },
-    {
-      title: '사용자관리',
-      path: '/users',
-      icon: '👥',
-      children: [
-        { title: '사용자 목록', path: '/users', icon: '📋' },
-        { title: '권한 관리', path: '/users/roles', icon: '🔒' }
-      ]
-    },
-    {
-      title: '설정',
-      path: '/settings',
-      icon: '🔧',
-      children: [
-        { title: '프로필설정', path: '/settings', icon: '📋' },
-        { title: '메뉴', path: '/menu', icon: '📋' }
-      ]
-      
-    }
-  ];
-
-  const renderSecondColumn = (item: MenuItem) => {
+  const renderSecondColumn = (item: any) => {
     if (!item.children) return null;
 
     return (
       <div className="inner">
-        <div className="title">
-          {item.title}
-        </div>
-        <ul className='nav-sub'>
-          {item.children.map((child, index) => (
-            <li
-              key={index}
-              className='items'
-            >
-              {child.path ? (
+        <div className="title">{item.menuNm}</div>
+        <ul className="nav-sub">
+          {item.children.map((child: any, index: any) => (
+            <li key={index} className="items">
+              {child.menuPath ? (
                 <Link
-                  href={child.path}
-                  className={`link-items ${pathname === child.path ? 'active' : ''}`}
+                  href={child.menuPath}
+                  className={`link-items ${
+                    pathname === child.menuPath ? "active" : ""
+                  }`}
                   onClick={(e) => {
-                    if (child.path === '/code/common') {
+                    if (child.menuPath === "/code/common") {
                       e.preventDefault();
-                      window.location.href = '/code';
+                      window.location.href = "/code";
                     }
                   }}
                 >
-                  <i className='ico nav' />
-                  <span>{child.title}</span>
+                  <i className="ico nav" />
+                  <span>{child.menuNm}</span>
                 </Link>
               ) : (
                 <>
-                <Link
-                  href={'#'}
-                  className={`link-items ${expandedMenu === child.title ? 'active' : ''}`}
-                  onClick={() => handleMenuClick(child.title)}
-                >
-                  <i className={`ico nav ${expandedMenu === child.title ? 'open' : ''}`} />
-                  <span>{child.title}</span>
-                  
-                  {child.children && (
-                    <i className={`ico toggle ${expandedMenu === child.title ? 'transform rotate-180' : 'transform rotate-0'}`} />
-                  )}
-                </Link>
-                {expandedMenu === child.title && child.children && (
-                  <ul className="sub-items">
-                    {child.children.map((subChild, subIndex) => (
-                      <li key={subIndex}>
-                        <Link
-                          href={subChild.path || '#'}
-                          className={`link-items ${pathname === subChild.path ? 'active' : ''}`}
-                        >
-                          <i className='ico nav-sub' />
-                          <span>{subChild.title}</span>
-                        </Link>
-                      </li>
+                  <Link
+                    href={"#"}
+                    className={`link-items ${
+                      expandedMenu === child.menuNm ? "active" : ""
+                    }`}
+                    onClick={() => handleMenuClick(child.menuNm)}
+                  >
+                    <i
+                      className={`ico nav ${
+                        expandedMenu === child.menuNm ? "open" : ""
+                      }`}
+                    />
+                    <span>{child.menuNm}</span>
 
-                    ))}
-                  </ul>
-                )}
+                    {child.children && (
+                      <i
+                        className={`ico toggle ${
+                          expandedMenu === child.menuNm
+                            ? "transform rotate-180"
+                            : "transform rotate-0"
+                        }`}
+                      />
+                    )}
+                  </Link>
+                  {expandedMenu === child.menuNm && child.children && (
+                    <ul className="sub-items">
+                      {child.children.map((subChild: any, subIndex: any) => (
+                        <li key={subIndex}>
+                          <Link
+                            href={subChild.menuPath || "#"}
+                            className={`link-items ${
+                              pathname === subChild.menuPath ? "active" : ""
+                            }`}
+                          >
+                            <i className="ico nav-sub" />
+                            <span>{subChild.menuNm}</span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </>
-              )}             
-            </li>  
+              )}
+            </li>
           ))}
         </ul>
       </div>
@@ -196,43 +160,49 @@ export default function Sidebar() {
   return (
     <>
       {/* Icon Menu */}
-      <div className='sidebar'>
+      <div className="sidebar">
         <nav>
           <button
             onClick={handleToggle}
             className="toggle-sidebar"
             aria-label="Toggle Sidebar"
           >
-            <i className='ico hamburger' />
+            <i className="ico hamburger" />
           </button>
 
-
-          <ul className='nav-menu'>
-          {menuItems.map((item, index) => (
-            <li key={index} className='items'>
-              <Link 
-                href={item.path || '#'}
-                className={`link-items ${activeMenu === item.title ? 'active' : ''}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleIconClick(item.title);
-                }}
-              >
-                <i className={`ico nav0${index + 1} ${activeMenu === item.title ? 'active' : ''}`} />
-                <span>{item.title}</span>
-              </Link>
-            </li>
-          ))}
+          <ul className="nav-menu">
+            {menuItems.map((item: any, index: any) => (
+              <li key={index} className="items">
+                <Link
+                  href={item.menuPath || "#"}
+                  className={`link-items ${
+                    activeMenu === item.menuNm ? "active" : ""
+                  }`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleIconClick(item.menuNm);
+                  }}
+                >
+                  <i
+                    className={`ico nav0${index + 1} ${
+                      activeMenu === item.menuNm ? "active" : ""
+                    }`}
+                  />
+                  <span>{item.menuNm}</span>
+                </Link>
+              </li>
+            ))}
           </ul>
         </nav>
       </div>
 
       {/* Second Column */}
-      <div className={`sidebar-sub ${showSecondColumn ? 'active' : ''}`}
-      >
-        {activeMenu && renderSecondColumn(menuItems.find(item => item.title === activeMenu)!)}
+      <div className={`sidebar-sub ${showSecondColumn ? "active" : ""}`}>
+        {activeMenu &&
+          renderSecondColumn(
+            menuItems.find((item: any) => item.menuNm === activeMenu)!
+          )}
       </div>
-      
     </>
   );
-} 
+}
