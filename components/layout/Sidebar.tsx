@@ -71,6 +71,8 @@ export default function Sidebar() {
   };
 
   const renderSecondColumn = (item: any) => {
+    console.log("second");
+    console.log(item);
     if (!item.children) return null;
 
     return (
@@ -148,6 +150,7 @@ export default function Sidebar() {
   };
 
   const handleToggle = () => {
+    console.log(isCollapsed);
     if (isCollapsed) {
       toggleSidebar();
       setShowSecondColumn(true);

@@ -42,7 +42,10 @@ export default function MenuTree() {
         data={treeData}
         onMove={onMove}
         onSelect={(e: any) => menuDetailOn(e)}
-        onClick={() => setIsDetail(true)}
+        onClick={() => {
+          setIsDetail(true);
+          setIsNew(false);
+        }}
       />
     );
   }, [treeData]);
@@ -207,18 +210,24 @@ export default function MenuTree() {
       relateImagePath: relateImagePath,
       relateImageNm: relateImageNm,
     };
-    await menuCreate(data);
-    await getMenu();
-    setIsNew(true);
-    setIsDetail(false);
-    setMenuDc("");
-    setmenuNm("");
-    setMenuNo(0);
-    setMenuOrder(0);
-    setMenuPath("");
-    setUpperMenuNo(0);
-    setRelateImageNm("");
-    setRelateImagePath("");
+    try {
+      let mm: any = menuCreate(data);
+      if (mm) {
+        setIsNew(false);
+        setIsDetail(true);
+        setMenuDc("");
+        setmenuNm("");
+        setMenuNo(0);
+        setMenuOrder(0);
+        setMenuPath("");
+        setUpperMenuNo(0);
+        setRelateImageNm("");
+        setRelateImagePath("");
+        await getMenu();
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const deleteMenu = async (menuNo: any) => {
