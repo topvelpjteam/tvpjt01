@@ -42,7 +42,9 @@ export default function ClientLayout({
                 }}
                 href={data.path}
                 draggable
-                onDrop={() => {
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
                   console.log(dr_no);
                   const newTabs = [...tabData];
                   const [removed] = newTabs.splice(dr_no, 1);
