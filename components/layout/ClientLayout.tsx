@@ -34,6 +34,12 @@ export default function ClientLayout({
           return (
             <>
               <Link
+                style={{
+                  width: "auto",
+                  height: "auto",
+                  display: "inline-block",
+                  verticalAlign: "top",
+                }}
                 href={data.path}
                 draggable
                 onDrop={() => {

@@ -71,82 +71,86 @@ export default function Sidebar() {
   };
 
   const renderSecondColumn = (item: any) => {
-    console.log("second");
-    console.log(item);
-    if (!item.children) return null;
+    if (item !== undefined) {
+      console.log("second");
+      console.log(item);
+      if (!item.children) return null;
 
-    return (
-      <div className="inner">
-        <div className="title">{item.menuNm}</div>
-        <ul className="nav-sub">
-          {item.children.map((child: any, index: any) => (
-            <li key={index} className="items">
-              {child.menuPath ? (
-                <Link
-                  href={child.menuPath}
-                  className={`link-items ${
-                    pathname === child.menuPath ? "active" : ""
-                  }`}
-                  onClick={(e) => {
-                    if (child.menuPath === "/code/common") {
-                      e.preventDefault();
-                      window.location.href = "/code";
-                    }
-                  }}
-                >
-                  <i className="ico nav" />
-                  <span>{child.menuNm}</span>
-                </Link>
-              ) : (
-                <>
+      return (
+        <div className="inner">
+          <div className="title">{item.menuNm}</div>
+          <ul className="nav-sub">
+            {item.children.map((child: any, index: any) => (
+              <li key={index} className="items">
+                {child.menuPath ? (
                   <Link
-                    href={"#"}
+                    href={child.menuPath}
                     className={`link-items ${
-                      expandedMenu === child.menuNm ? "active" : ""
+                      pathname === child.menuPath ? "active" : ""
                     }`}
-                    onClick={() => handleMenuClick(child.menuNm)}
+                    onClick={(e) => {
+                      if (child.menuPath === "/code/common") {
+                        e.preventDefault();
+                        window.location.href = "/code";
+                      }
+                    }}
                   >
-                    <i
-                      className={`ico nav ${
-                        expandedMenu === child.menuNm ? "open" : ""
-                      }`}
-                    />
+                    <i className="ico nav" />
                     <span>{child.menuNm}</span>
-
-                    {child.children && (
+                  </Link>
+                ) : (
+                  <>
+                    <Link
+                      href={"#"}
+                      className={`link-items ${
+                        expandedMenu === child.menuNm ? "active" : ""
+                      }`}
+                      onClick={() => handleMenuClick(child.menuNm)}
+                    >
                       <i
-                        className={`ico toggle ${
-                          expandedMenu === child.menuNm
-                            ? "transform rotate-180"
-                            : "transform rotate-0"
+                        className={`ico nav ${
+                          expandedMenu === child.menuNm ? "open" : ""
                         }`}
                       />
+                      <span>{child.menuNm}</span>
+
+                      {child.children && (
+                        <i
+                          className={`ico toggle ${
+                            expandedMenu === child.menuNm
+                              ? "transform rotate-180"
+                              : "transform rotate-0"
+                          }`}
+                        />
+                      )}
+                    </Link>
+                    {expandedMenu === child.menuNm && child.children && (
+                      <ul className="sub-items">
+                        {child.children.map((subChild: any, subIndex: any) => (
+                          <li key={subIndex}>
+                            <Link
+                              href={subChild.menuPath || "#"}
+                              className={`link-items ${
+                                pathname === subChild.menuPath ? "active" : ""
+                              }`}
+                            >
+                              <i className="ico nav-sub" />
+                              <span>{subChild.menuNm}</span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
                     )}
-                  </Link>
-                  {expandedMenu === child.menuNm && child.children && (
-                    <ul className="sub-items">
-                      {child.children.map((subChild: any, subIndex: any) => (
-                        <li key={subIndex}>
-                          <Link
-                            href={subChild.menuPath || "#"}
-                            className={`link-items ${
-                              pathname === subChild.menuPath ? "active" : ""
-                            }`}
-                          >
-                            <i className="ico nav-sub" />
-                            <span>{subChild.menuNm}</span>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </>
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
+                  </>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    } else {
+      return;
+    }
   };
 
   const handleToggle = () => {
